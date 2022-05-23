@@ -1,0 +1,36 @@
+Sort and remove duplicate in file :
+    sort -u rockyou.txt >> rockyouunique.txt
+
+
+Get the number of lines in the file :
+    wc -l rockyouunique.txt
+
+
+Run command in every 10 seconds :
+    watch -n 10 "wc -l rockyouunique.txt"
+    Note : -n 10 means run command every 10 seconds
+    Note : You may need to install watch command first :
+       Linux : sudo apt-get install watch
+       Mac :brew install watch
+
+
+If you get illegal byte sequence error on Mac OS X
+    Use LC_ALL=C before command.
+    For example :
+    LC_ALL=C wc -l rockyouunique.txt
+
+
+To make all lines capital letters :
+    cat rockyouhash.txt | tr a-z A-Z >> temp.txt
+
+
+To make all lines capital letters but just up to first 40 characters :
+    awk '{print toupper(substr($0,1,40))""substr($0,40)}' rockyouhashwithpassword.txt >> temp.txt
+
+
+To see log file with color :
+    less -R -N LogFile.log
+
+
+To remove first 2 characters from every line :
+    sed 's/^.\{2\}//g' rockyouhashwithpassword.txt >> temp.txt
