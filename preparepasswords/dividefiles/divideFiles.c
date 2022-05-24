@@ -40,15 +40,15 @@ int processPasswordFile(char * passwordFile) {
   clock_t start, end;
   double cpu_time_used;
 
-  // If only hashes then keep below line to 45
-  int MAXLINELEN = 100; // Change this to increase the maximum line length(if file has both hash and password)
+  // If only hashes then keep below line to 45, if with passwords then keep below line to 100 or more
+  int MAXLINELEN = 45; // Change this to increase the maximum line length(if file has both hash and password)
   char * line = malloc(sizeof(char) * MAXLINELEN);
 
   struct stat st = {
     0
   };
 
-  char flag = 'T'; // Set this as T if proceessing from start
+  char flag = 'T'; // Set this as T if processing from start
 
   char pointerMainArray[16] = {
     '0',
@@ -102,7 +102,7 @@ int processPasswordFile(char * passwordFile) {
 
   char * aline;
   int count = 0;
-  int totalCount = 14346081;
+  int totalCount = 999998;
 
   while ((aline = fgets(line, MAXLINELEN, ptr)) != NULL) {
     if (strcmp(aline, "") == 0) // Last Line Which Has Been Processed, put inside "" and \n in the end.
@@ -123,13 +123,13 @@ int processPasswordFile(char * passwordFile) {
       if (strcmp(currentPotinter, nextPointer) == 0) {
         fclose(writePasswordFile);
 
-        char * filePathWithCommand = genrateFilePath("mkdir -p ../../Passwords/rockyou/hasheswithpasswords/", aline[0]);
+        char * filePathWithCommand = genrateFilePath("mkdir -p ../../SecLists/hashes/", aline[0]);
 
         if (stat(filePathWithCommand, & st) == -1) {
           system(filePathWithCommand);
         }
 
-        char * filePath = genrateFilePath("../../Passwords/rockyou/hasheswithpasswords/", aline[0]);
+        char * filePath = genrateFilePath("../../SecLists/hashes/", aline[0]);
         char * fileName = genrateFileName(filePath, "/passwords-starting-with-", aline[0], aline[1], ".txt");
 
         writePasswordFile = fopen(fileName, "a+");
@@ -162,7 +162,7 @@ int processPasswordFile(char * passwordFile) {
 }
 
 int main(int argc, char * argv[]) {
-  char * passwordFile = "../../Passwords/rockyou/rockyouhashwithpassword.txt";
+  char * passwordFile = "../../SecLists/seclistshash.txt";
   processPasswordFile(passwordFile);
 
   return 0;
