@@ -1,5 +1,8 @@
-async function checkPassword() {
+function checkPassword() {
 
+    document.getElementsByName('source').forEach(function(ele, idx) {
+        ele.style.color = "white";
+    })
     document.getElementById('Error').style.display = "none";
     document.getElementById("searchPwnedPasswords").disabled = true;
 
@@ -16,53 +19,53 @@ async function checkPassword() {
         document.getElementById("rockyou").innerHTML = loading;
         document.getElementById("ErrorMessage").innerHTML = "";
 
-        setTimeout(async function() {
-            hashPassword = await (hex_sha1(password)).toUpperCase();
-            checkhaveibeenpwned(hashPassword);
+        setTimeout(function() {
+            checkhaveibeenpwned((hex_sha1(password)).toUpperCase());
         }, 100);
     }
 }
 
 async function checkhaveibeenpwned(hashPassword) {
-
     var url = "https://knowyourpassword.pythonanywhere.com/api/v1/haveibeenpwned/" + hashPassword.substring(0, 5);
-    var response = await httpGet(url);
-    var json = JSON.parse(response);
 
-    if (json.status == 429) {
-        await twoManyRequest();
-    } else if (json.status == 200) {
-        await checkResult(json, hashPassword, "haveibeenpwned");
-        await checkrockyou(hashPassword);
-    } else {
-        document.getElementById("haveibeenpwned").innerHTML = "Error";
-
-        await checkrockyou(hashPassword);
-    }
+    fetch(url).then(function(response) {
+        return response.json();
+    }).then(function(json) {
+        if (json.status == 429) {
+            twoManyRequest();
+        } else if (json.status == 200) {
+            checkResult(json, hashPassword, "haveibeenpwned").then(function() {
+                checkrockyou(hashPassword);
+            });
+        } else {
+            document.getElementById("haveibeenpwned").innerHTML = "Error";
+            checkrockyou(hashPassword);
+        }
+    });
 }
 
 async function checkrockyou(hashPassword) {
 
     var url = "https://knowyourpassword.pythonanywhere.com/api/v1/rockyou/" + hashPassword.substring(0, 5);
-    var response = await httpGet(url);
-    var json = JSON.parse(response);
 
-    if (json.status == 429) {
-        await twoManyRequest();
-    }
-    if (json.status == 200) {
-        await checkResult(json, hashPassword, "rockyou");
-
-        document.getElementById("searchPwnedPasswords").disabled = false;
-    } else {
-        document.getElementById("rockyou").innerHTML = "Error";
-        document.getElementById("searchPwnedPasswords").disabled = false;
-    }
-
+    fetch(url).then(function(response) {
+        return response.json();
+    }).then(function(json) {
+        if (json.status == 429) {
+            twoManyRequest();
+        } else if (json.status == 200) {
+            checkResult(json, hashPassword, "rockyou").then(function() {
+                document.getElementById("searchPwnedPasswords").disabled = false;
+            });
+        } else {
+            document.getElementById("rockyou").innerHTML = "Error";
+            document.getElementById("searchPwnedPasswords").disabled = false;
+        }
+    });
 }
 
 
-async function twoManyRequest() {
+function twoManyRequest() {
 
     document.getElementsByName('source').forEach(function(ele, idx) {
         ele.innerHTML = 'Error';
@@ -73,7 +76,7 @@ async function twoManyRequest() {
 }
 
 
-async function showHide(id) {
+function showHide(id) {
 
     if (document.getElementById) {
         var divId = document.getElementById(id);
@@ -84,18 +87,6 @@ async function showHide(id) {
     }
     return false;
 }
-
-
-async function httpGet(theUrl) {
-
-    var xmlHttp = new XMLHttpRequest();
-
-    xmlHttp.open("GET", theUrl, false); // false for synchronous request
-    xmlHttp.send(null);
-
-    return xmlHttp.responseText;
-}
-
 
 async function checkResult(json, hashPassword, id) {
 
