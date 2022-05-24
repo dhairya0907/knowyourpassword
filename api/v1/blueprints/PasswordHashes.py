@@ -8,7 +8,7 @@ import string
 
 
 PasswordHashes = Blueprint("PasswordHashes", __name__)
-providers = {"haveibeenpwned", "rockyou"}
+providers = {"haveibeenpwned", "rockyou", "topmillion"}
 # StaticPath = "mysite/api/v1/static/"
 # StaticImport = importlib.import_module("mysite.api.v1.static.IdDictionary")
 StaticPath = "api/v1/static/"
@@ -26,6 +26,8 @@ def getHashFileIDs(provider):
         return StaticImport.haveibeenpwned
     elif provider == 'rockyou':
         return StaticImport.rockyou
+    elif provider == 'topmillion':
+        return StaticImport.topmillion
 
 def gethashes(provider, prehash):
     if len(prehash) != 5:
@@ -66,14 +68,14 @@ def gethashes(provider, prehash):
 
 
 @PasswordHashes.route("/api/v1/<string:provider>/<string:prehash>", methods=['GET'])
-@limiter.limit("1/10 seconds")  # rate limit set to 1 requests per 10 seconds
 @cache.cached(timeout=604800)  # 604800 cache set to 1 week in seconds
+@limiter.limit("1/2 seconds")  # rate limit set to 1 requests per 10 seconds
 def getresult(provider, prehash):
     return gethashes(provider, prehash)
 
 @PasswordHashes.route("/api/v1/haveibeenpwned/<string:prehash>", methods=['GET'])
-@limiter.limit("1/20 seconds")  # rate limit set to 1 requests per 20 seconds
 @cache.cached(timeout=604800)  # 604800 cache set to 1 week in seconds
+@limiter.limit("1/10 seconds")  # rate limit set to 1 requests per 20 seconds
 def gethaveibeenpwned(prehash):
     return gethashes("haveibeenpwned", prehash)
 
