@@ -14,6 +14,10 @@ app.register_blueprint(PasswordHashes)
 def home():
     return render_template('home.html')
 
+@app.route("/api")
+def api():
+    return render_template('api.html')
+
 
 @app.errorhandler(429)
 def ratelimit_handler(error):
