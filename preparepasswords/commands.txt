@@ -34,3 +34,6 @@ To see log file with color :
 
 To remove first 2 characters from every line :
     sed 's/^.\{2\}//g' rockyouhashwithpassword.txt >> temp.txt
+
+To remove nth character from every line :
+    cat seclistshashwithpassword.txt | sed 's/.//41' >> temp.txt
