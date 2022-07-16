@@ -75,7 +75,9 @@ See the [open issues](https://github.com/dhairya0907/knowyourpassword/issues) fo
 
 Distributed under the MIT License. See [`LICENSE`](https://github.com/dhairya0907/knowyourpassword/blob/main/LICENSE) for more information.
 
+## Acknowledgements
 
+- Inspired by [have i been pwned?](https://haveibeenpwned.com/)
 
 <!-- CONTACT -->
 ## Contact
